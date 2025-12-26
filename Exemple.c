@@ -5,36 +5,37 @@
 
 #define HEIGHT 450
 #define WIDTH  900
-#define RADIUS 50
-#define MAX_BUILDINGS 10
+#define MAX_BUILDINGS 100
+#define FLAG_WINDOW_RESIZABLE 0x00000004
+// SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
 
 
 
-void GeneratRec(Vector2 *p, Vector2 *p2, Color *p3)
-{
-    // Vector3 D = { 0 };
-    Vector2 *Rectangle_01[MAX_BUILDINGS] = { 0 };
-    Vector2 *RecPosition[MAX_BUILDINGS]  = { 0 };
-    Color *color[MAX_BUILDINGS]          = { 0 };
+// void GeneratRec(Vector2 *p, Vector2 *p2, Color *p3)
+// {
+//     // Vector3 D = { 0 };
+//     Vector2 *Rectangle_01[MAX_BUILDINGS] = { 0 };
+//     Vector2 *RecPosition[MAX_BUILDINGS]  = { 0 };
+//     Color *color[MAX_BUILDINGS]          = { 0 };
 
-    *p = *Rectangle_01[MAX_BUILDINGS];
-    *p2= *RecPosition[MAX_BUILDINGS];
-    *p3= *color[MAX_BUILDINGS];
+//     *p = *Rectangle_01[MAX_BUILDINGS];
+//     *p2= *RecPosition[MAX_BUILDINGS];
+//     *p3= *color[MAX_BUILDINGS];
 
-    for (int i = 0; i < MAX_BUILDINGS; i++)
-    {
-        Rectangle_01[i]->x    = GetRandomValue(50, 300);
-        Rectangle_01[i]->y    = GetRandomValue(50, 100);
-        RecPosition[i]->x  = GetRandomValue(0, WIDTH);
-        RecPosition[i]->y  = HEIGHT/2;
-        color[i]->a        = GetRandomValue(10,50);
-        color[i]->r        = GetRandomValue(0,255);
-        color[i]->g        = GetRandomValue(0,255);
-        color[i]->b        = GetRandomValue(0,255);
+//     for (int i = 0; i < MAX_BUILDINGS; i++)
+//     {
+//         Rectangle_01[i]->x    = GetRandomValue(50, 300);
+//         Rectangle_01[i]->y    = GetRandomValue(50, 100);
+//         RecPosition[i]->x  = GetRandomValue(0, WIDTH);
+//         RecPosition[i]->y  = HEIGHT/2;
+//         color[i]->a        = GetRandomValue(10,50);
+//         color[i]->r        = GetRandomValue(0,255);
+//         color[i]->g        = GetRandomValue(0,255);
+//         color[i]->b        = GetRandomValue(0,255);
 
-    }  
-}
+//     }  
+// }
 
 void DrawRec(void)
 {
@@ -54,48 +55,46 @@ int main(void)
 {
     
     InitWindow(WIDTH, HEIGHT, "2D Camera");
-    Vector2 Rectangle = {WIDTH/2, HEIGHT/2 };
-    Vector2 SiezRectangle = {50,100};
+    Rectangle Mainplayer               = {WIDTH/2,HEIGHT/2,50,50 };
+    Rectangle Buildings[MAX_BUILDINGS] = { 0 };
+    Color color[MAX_BUILDINGS]         = { 0 };
+    int Spacing = 0;
+    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-    GeneratRec();
-    // Rectangle[NumberOfBuilduings] = {0,0};
-    // for (int i = 0; i < MAX_BUILDINGS; i++)
-    // {
-    //     Rectangle_01[i].x = GetRandomValue(50, 300);
-    //     Rectangle_01[i].y = GetRandomValue(50, 100);
-    //     RecPosition[i].x  = GetRandomValue(0, WIDTH);
-    //     RecPosition[i].y  = HEIGHT/2; /*GetRandomValue(HEIGHT/2 - 100, HEIGHT/2);  */
-    //     color[i].a        = GetRandomValue(10,50);
-    //     color[i].r        = GetRandomValue(0,255);
-    //     color[i].g        = GetRandomValue(0,255);
-    //     color[i].b        = GetRandomValue(0,255);
+    for (int i = 0; i < MAX_BUILDINGS; i++)
+    {
+        Buildings[i].width  = (float) GetRandomValue(50, 100);
+        Buildings[i].height = (float)GetRandomValue(100, 200);
+        Buildings[i].x      = -100.0f + Spacing;
+        Buildings[i].y      = HEIGHT/2 - Buildings[i].height + 50; 
+        Spacing            += (int)Buildings[i].width;
 
-    // } 
+        color[i].a        = GetRandomValue(10,60);
+        color[i].r        = GetRandomValue(0,255);
+        color[i].g        = GetRandomValue(0,255);
+        color[i].b        = GetRandomValue(0,255);
+
+    } 
 
     // GeneratRec();
 
-    Camera2D Camera = {{WIDTH/2 - 50, HEIGHT/2}, {Rectangle.x, Rectangle.y}, 0, 1.0f};
+    Camera2D Camera = {{WIDTH/2, HEIGHT/2}, {Mainplayer.x, Mainplayer.y}, 0.0f, 1.0f};
     SetTargetFPS(60);
     
     while (!WindowShouldClose())
     {   
         
         Camera.zoom = expf(logf(Camera.zoom) + ((float)GetMouseWheelMove()*0.1f));
+        Camera.target = (Vector2){Mainplayer.x + 25, Mainplayer.y + 25};
         CamPosition(&Camera);
-        printf("%d\n", GetRenderWidth());
 
 
         BeginDrawing(); 
             ClearBackground(WHITE);
             BeginMode2D(Camera);
-                DrawRectangleV(Rectangle, SiezRectangle, RED);
-                // DrawLine(0, HEIGHT/2 + 100, WIDTH, HEIGHT/2 + 100, BLUE);
-                DrawRectangle(0, HEIGHT/2 + 100, WIDTH, HEIGHT/2 + 100, BLUE);
-                for (int i = 0; i < MAX_BUILDINGS; i++)
-                {
-                    DrawRectangleV(RecPosition[i],Rectangle_01[i], color[i] );
-                    /* code */
-                }
+            DrawRectangleRec(Mainplayer, RED);
+            for ( int i = 0; i < MAX_BUILDINGS; i++){DrawRectangleRec(Buildings[i], color[i]); }
+            
                 
                 // DrawCircleLinesV(Cercle, RADIUS, PINK);
             EndMode2D();
