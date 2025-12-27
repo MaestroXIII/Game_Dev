@@ -1,41 +1,12 @@
 #include <stdio.h>
 #include "/home/abderrahim/Bureau/DEV/C/raylib-5.5_linux_amd64/include/raylib.h"
 #include <math.h>
-// #include <__clang_hip_math.h>
 
 #define HEIGHT 450
 #define WIDTH  900
 #define MAX_BUILDINGS 1000
-#define FLAG_WINDOW_RESIZABLE 0x00000004
-// SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
 
-
-
-// void GeneratRec(Vector2 *p, Vector2 *p2, Color *p3)
-// {
-//     // Vector3 D = { 0 };
-//     Vector2 *Rectangle_01[MAX_BUILDINGS] = { 0 };
-//     Vector2 *RecPosition[MAX_BUILDINGS]  = { 0 };
-//     Color *color[MAX_BUILDINGS]          = { 0 };
-
-//     *p = *Rectangle_01[MAX_BUILDINGS];
-//     *p2= *RecPosition[MAX_BUILDINGS];
-//     *p3= *color[MAX_BUILDINGS];
-
-//     for (int i = 0; i < MAX_BUILDINGS; i++)
-//     {
-//         Rectangle_01[i]->x    = GetRandomValue(50, 300);
-//         Rectangle_01[i]->y    = GetRandomValue(50, 100);
-//         RecPosition[i]->x  = GetRandomValue(0, WIDTH);
-//         RecPosition[i]->y  = HEIGHT/2;
-//         color[i]->a        = GetRandomValue(10,50);
-//         color[i]->r        = GetRandomValue(0,255);
-//         color[i]->g        = GetRandomValue(0,255);
-//         color[i]->b        = GetRandomValue(0,255);
-
-//     }  
-// }
 
 void DrawRec(void)
 {
@@ -44,12 +15,10 @@ void DrawRec(void)
 
 void CamPosition(Camera2D *Camera)
 {
-    if (Camera->zoom <  0.8f){Camera->zoom =  0.8f;} /*expf(logf(Camera->zoom*0.1f));}*/
-    if (Camera->zoom > 3.0f){Camera->zoom = 3.0f;}/*(logf(Camera->zoom*0.1f));}*/
+    if (Camera->zoom <  0.1f){Camera->zoom =  0.1f;}
+    if (Camera->zoom > 3.0f){Camera->zoom = 3.0f;}
     if (IsKeyDown(KEY_Q)){if(Camera->rotation > 38.0f){ expf(logf(Camera->rotation*0.01f));} else {Camera->rotation += 2;}}
     if (IsKeyDown(KEY_E)){if(Camera->rotation < -38.0f){expf(logf(Camera->rotation*0.1f));} else {Camera->rotation -= 2;}}
-    // if (IsKeyDown(KEY_Q)){if(Camera->rotation > 40.0f){Camera->rotation = 40.0f;}}
-    // if (IsKeyDown(KEY_E)){if(Camera->rotation < -40.0f){Camera->rotation = -40.0f;}}
     if (IsKeyDown(KEY_R)){Camera->rotation = 0; Camera->zoom = 1.0f;}
 }
 
@@ -101,8 +70,8 @@ int main(void)
                 DrawRectangleRec(Mainplayer, RED);
                 for ( int i = 0; i < MAX_BUILDINGS; i++){DrawRectangleRec(Buildings[i], color[i]); }
                 //ligne verticale
-                DrawLine((float)Camera.target.x,1000.0f,(float) (float)Camera.target.x, -1000.0f, GREEN);
-                DrawLine(-8000.0f, (float)Camera.target.y, 8000.0f, (float)Camera.target.y, GREEN);
+                DrawLine((float)Camera.target.x,100000.0f,(float) (float)Camera.target.x, -100000.0f, GREEN);
+                DrawLine(-800000.0f, (float)Camera.target.y, 800000.0f, (float)Camera.target.y, GREEN);
             EndMode2D();
             DrawText("Free 2D camera controls:", 20, 20, 10, BLACK);
             DrawText("- Right/Left to move player", 40, 40, 10, DARKGRAY);
