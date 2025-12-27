@@ -5,7 +5,7 @@
 
 #define HEIGHT 450
 #define WIDTH  900
-#define MAX_BUILDINGS 100
+#define MAX_BUILDINGS 1000
 #define FLAG_WINDOW_RESIZABLE 0x00000004
 // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
@@ -48,6 +48,8 @@ void CamPosition(Camera2D *Camera)
     if (Camera->zoom > 3.0f){Camera->zoom = 3.0f;}/*(logf(Camera->zoom*0.1f));}*/
     if (IsKeyDown(KEY_Q)){if(Camera->rotation > 38.0f){ expf(logf(Camera->rotation*0.01f));} else {Camera->rotation += 2;}}
     if (IsKeyDown(KEY_E)){if(Camera->rotation < -38.0f){expf(logf(Camera->rotation*0.1f));} else {Camera->rotation -= 2;}}
+    // if (IsKeyDown(KEY_Q)){if(Camera->rotation > 40.0f){Camera->rotation = 40.0f;}}
+    // if (IsKeyDown(KEY_E)){if(Camera->rotation < -40.0f){Camera->rotation = -40.0f;}}
     if (IsKeyDown(KEY_R)){Camera->rotation = 0; Camera->zoom = 1.0f;}
 }
 
@@ -55,7 +57,7 @@ int main(void)
 {
     
     InitWindow(WIDTH, HEIGHT, "2D Camera");
-    Rectangle Mainplayer               = {WIDTH/2,HEIGHT/2,50,50 };
+    Rectangle Mainplayer               = {WIDTH/2,HEIGHT/2,50.0f,50.0f };
     Rectangle Buildings[MAX_BUILDINGS] = { 0 };
     Color color[MAX_BUILDINGS]         = { 0 };
     int Spacing = 0;
@@ -64,8 +66,8 @@ int main(void)
     for (int i = 0; i < MAX_BUILDINGS; i++)
     {
         Buildings[i].width  = (float) GetRandomValue(50, 100);
-        Buildings[i].height = (float)GetRandomValue(100, 200);
-        Buildings[i].x      = -100.0f + Spacing;
+        Buildings[i].height = (float)GetRandomValue(70, 300);
+        Buildings[i].x      = -6000.0f + Spacing;
         Buildings[i].y      = HEIGHT/2 - Buildings[i].height + 50; 
         Spacing            += (int)Buildings[i].width;
 
@@ -85,19 +87,28 @@ int main(void)
     {   
         
         Camera.zoom = expf(logf(Camera.zoom) + ((float)GetMouseWheelMove()*0.1f));
-        Camera.target = (Vector2){Mainplayer.x + 25, Mainplayer.y + 25};
+        Camera.target = (Vector2){Mainplayer.x + 25.0f, Mainplayer.y + 25.0f};
         CamPosition(&Camera);
+        if(IsKeyDown(KEY_RIGHT)) Mainplayer.x += 5.0f;
+        if(IsKeyDown(KEY_LEFT))  Mainplayer.x -= 5.0f;
+
 
 
         BeginDrawing(); 
             ClearBackground(WHITE);
-            BeginMode2D(Camera);
-            DrawRectangleRec(Mainplayer, RED);
-            for ( int i = 0; i < MAX_BUILDINGS; i++){DrawRectangleRec(Buildings[i], color[i]); }
-            
-                
-                // DrawCircleLinesV(Cercle, RADIUS, PINK);
+                BeginMode2D(Camera);
+                DrawRectangle(-8000, HEIGHT/2 + 50, 130000, 80000, DARKGRAY);
+                DrawRectangleRec(Mainplayer, RED);
+                for ( int i = 0; i < MAX_BUILDINGS; i++){DrawRectangleRec(Buildings[i], color[i]); }
+                //ligne verticale
+                DrawLine((float)Camera.target.x,1000.0f,(float) (float)Camera.target.x, -1000.0f, GREEN);
+                DrawLine(-8000.0f, (float)Camera.target.y, 8000.0f, (float)Camera.target.y, GREEN);
             EndMode2D();
+            DrawText("Free 2D camera controls:", 20, 20, 10, BLACK);
+            DrawText("- Right/Left to move player", 40, 40, 10, DARKGRAY);
+            DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, DARKGRAY);
+            DrawText("- A / E to Rotate", 40, 80, 10, DARKGRAY);
+            DrawText("- R to reset Zoom and Rotation", 40, 100, 10, DARKGRAY);
         EndDrawing();
                 
     }
